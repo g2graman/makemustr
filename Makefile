@@ -13,7 +13,7 @@ ifneq "$(wildcard ./node_modules/.bin/mocha)" ""
 endif
 
 check: test
- 
+
 test:
 	@$(eval TARGETS=$(filter-out $@,$(MAKECMDGOALS)))
 	@$(eval TARGETS=$(TARGETS:test/%=%))
@@ -26,7 +26,7 @@ test:
 clean:
 	scripts/clean.sh nbproject .vagrant
 	cd assets
-	scripts/clean.sh nbproject .vagrant    
+	scripts/clean.sh nbproject .vagrant
 	cd ..
 
 install:
@@ -36,6 +36,11 @@ run:
 	sails lift
 
 # Commands for interaction with vagrant VM --- START
+
+
+# Order for make commands: make init_box, make load_box, make install_box, make run_box
+# After all dependencies installed, can just use: make load_box, make run_box
+
 init_box:
 	vagrant box add ubuntu/trusty64 "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box" --provider virtualbox
 	vagrant plugin install vagrant-exec
@@ -44,14 +49,15 @@ load_box:
 	vagrant up
 
 install_box:
-	vagrant exec sudo apt-get --assume-yes install nodejs-legacy npm git &&
-	vagrant exec sudo npm install npm -g &&
+	vagrant exec sudo apt-get --assume-yes install nodejs-legacy npm git
+	vagrant exec sudo npm install npm -g
 	vagrant exec sudo npm install -g sails
+	git clone https://github.com/g2graman/Mustr
 
 run_box:
-	vagrant exec cd /vagrant &&
-	vagrant exec sudo make install &&
-	vagrant exec sudo make run &&
+	vagrant exec cd Mustr
+	vagrant exec sudo make install
+	vagrant exec sudo make run
 	vagrant ssh
 
 clean_box:
@@ -59,15 +65,14 @@ clean_box:
 	rm -rf .vagrant
 
 init_from_box:
-	sudo apt-get --assume-yes install nodejs-legacy npm git &&
-	sudo npm install npm -g &&
+	sudo apt-get --assume-yes install nodejs-legacy npm git
+	sudo npm install npm -g
 	sudo npm install -g sails
+	git clone https://github.com/g2graman/Mustr
 
 run_from_box:
-	cd /vagrant && sudo make install && sudo make run
+	cd Mustr && sudo make install && sudo make run
 
-# Order for make commands: make init_box, make load_box, make install_box, make run_box
-# After all dependencies installed, can just use: make load_box, make run_box
 # Commands for interaction with vagrant VM --- END
 
 silent:
